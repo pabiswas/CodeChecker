@@ -50,7 +50,7 @@ public class TestCodeChecker
     @Test(expected = InvalidFile.class)
     public void InvalidXML_shouldThrowInvalidFile() throws Exception {
         String[] args = new String[10];
-        args[0] = "ZeroKb.xml";
+        args[0] = "src\\test\\java\\cpp\\codechecker\\ZeroKb.xml";
         codeChecker.main(args);
     }
 }
