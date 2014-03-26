@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 public class CodeChecker {
 
     public static void main(String[] args) throws FileNotFoundException {
+        System.out.println("Current working directory : " + System.getProperty("user.dir"));
         if(!isParsedXmlPresent(args))
             return;
     }
