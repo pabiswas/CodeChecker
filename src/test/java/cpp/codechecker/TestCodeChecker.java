@@ -78,9 +78,13 @@ public class TestCodeChecker
     }
     
     @Test
-    public void getMembers_should_give_all_members()
+    public void getMembers_should_give_all_members() throws SAXException, IOException
     {
-        
+        xmlProcessor.process(getXMLFile());
+        HashSet<String> members = xmlProcessor.getAllMembers("Base");
+        assert(members.contains("isaac"));
+        assert(members.contains("partha"));
+        assert(members.contains("nsn"));
     }
     
     private String[] getXMLFile() {
