@@ -3,6 +3,7 @@ package cpp.codechecker;
 import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -14,7 +15,12 @@ import org.xml.sax.SAXException;
  * @author pabiswas
  */
 public class XMLProcessor {
-   private String m_className;
+   private HashSet<String> m_classNames;
+
+    public XMLProcessor() 
+    {
+        m_classNames = new HashSet<String>();
+    }
    
    public void process(String[] args) throws SAXException, IOException
    {
@@ -27,13 +33,14 @@ public class XMLProcessor {
        for (int numOfClasses = 0; numOfClasses < classes.getLength(); ++numOfClasses)
        {
            NamedNodeMap map = classes.item(numOfClasses).getAttributes();
-           System.out.println("ClassName : " + map.getNamedItem("name").getTextContent());
-           m_className = map.getNamedItem("name").getTextContent();
+           String className = map.getNamedItem("name").getTextContent();
+           System.out.println("ClassName : " + className);
+           m_classNames.add(className);
        }
    }
-  
-   public String getClassName()
+   
+   public HashSet<String> getAllClassNames()
    {
-       return m_className;
+       return m_classNames;
    }
 }

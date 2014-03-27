@@ -3,11 +3,14 @@ package cpp.codechecker;
 import cpp.codechecker.InvalidFile;
 import cpp.codechecker.CodeChecker;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.HashSet;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
 /**
  * Unit test for simple App.
@@ -15,6 +18,7 @@ import org.junit.Test;
 public class TestCodeChecker
 {
     private CodeChecker codeChecker;
+    private XMLProcessor xmlProcessor;
     /**
      * Create the test case
      *
@@ -22,6 +26,7 @@ public class TestCodeChecker
      */
     public TestCodeChecker() {
         codeChecker = new CodeChecker();
+        xmlProcessor = new XMLProcessor();
     }
 
     @BeforeClass
@@ -53,4 +58,24 @@ public class TestCodeChecker
         args[0] = "src\\test\\java\\cpp\\codechecker\\ZeroKb.xml";
         codeChecker.main(args);
     }
+    
+    @Test
+    public void ValidXML_should_get_proper_class_names() throws SAXException, IOException
+    {
+        xmlProcessor.process(getXMLFile());
+        HashSet<String> classNames = xmlProcessor.getAllClassNames();
+        assert(classNames.contains("Base"));
+    }
+    
+    @Test
+    public void getMembers_should_give_all_members()
+    {
+        
+    }
+    
+    private String[] getXMLFile() {
+        String[] args = new String[10];
+        args[0] = "output.xml";
+        return args;
+    }    
 }
