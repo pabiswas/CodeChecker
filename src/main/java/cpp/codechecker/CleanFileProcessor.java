@@ -71,8 +71,6 @@ public class CleanFileProcessor {
             classNames.add(className);
             }
         }
-        for(int i=0; i<classNames.size(); i++)
-            System.out.println("ClassName = " + classNames.get(i));
         writer.close();
         reader.close();
         return classNames;
