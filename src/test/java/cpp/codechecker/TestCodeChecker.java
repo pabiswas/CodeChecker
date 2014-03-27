@@ -1,13 +1,16 @@
 package cpp.codechecker;
 
-import cpp.codechecker.InvalidFile;
 import cpp.codechecker.CodeChecker;
+import cpp.codechecker.InvalidFile;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.xml.sax.SAXException;
 
 /**
  * Unit test for simple App.
@@ -52,5 +55,14 @@ public class TestCodeChecker
         String[] args = new String[10];
         args[0] = "src\\test\\java\\cpp\\codechecker\\ZeroKb.xml";
         codeChecker.main(args);
+    }
+        
+    @Test
+    public void TestGetClassNames() throws Exception {
+        CleanFileProcessor processor = new CleanFileProcessor();
+        ArrayList<String> classNames = processor.getClassNames("Calculation.cpp");
+        assert (classNames.contains("Program"));
+        assert (classNames.contains("Calculation"));
+        assert (classNames.contains("Dummy"));
     }
 }
