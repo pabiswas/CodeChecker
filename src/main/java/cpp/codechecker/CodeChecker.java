@@ -2,13 +2,16 @@ package cpp.codechecker;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import org.xml.sax.SAXException;
 
 public class CodeChecker {
 
-    public static void main(String[] args) throws FileNotFoundException {
-        System.out.println("Current working directory : " + System.getProperty("user.dir"));
-        if(!isParsedXmlPresent(args))
+    public static void main(String[] xmlFile) throws FileNotFoundException, SAXException, IOException {
+        if(!isParsedXmlPresent(xmlFile))
             return;
+        XMLProcessor processor = new XMLProcessor();
+        processor.process(xmlFile);
     }
 
     private static boolean isParsedXmlPresent(String[] args) throws FileNotFoundException {
