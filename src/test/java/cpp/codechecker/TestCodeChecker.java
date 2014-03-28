@@ -5,6 +5,7 @@ import cpp.codechecker.InvalidFile;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -39,7 +40,8 @@ public class TestCodeChecker
     }
 
     @Before
-    public void setUp() {
+    public void setUp() throws SAXException, IOException {
+        xmlProcessor.process(getXMLFile());
     }
 
     @After
@@ -72,7 +74,6 @@ public class TestCodeChecker
     @Test
     public void ValidXML_should_get_proper_class_names() throws SAXException, IOException
     {
-        xmlProcessor.process(getXMLFile());
         HashSet<String> classNames = xmlProcessor.getAllClassNames();
         assert(classNames.contains("Base"));
     }
@@ -80,11 +81,31 @@ public class TestCodeChecker
     @Test
     public void getMembers_should_give_all_members() throws SAXException, IOException
     {
-        xmlProcessor.process(getXMLFile());
-        HashSet<String> members = xmlProcessor.getAllMembers("Base");
+        HashSet<String> members = xmlProcessor.getAllMemberInClass("Base");
         assert(members.contains("isaac"));
         assert(members.contains("partha"));
         assert(members.contains("nsn"));
+    }
+    
+    @Test
+    public void getAllConstMembers_should_give_const_members()
+    {
+//        HashSet<String> constMembers = xmlProcessor.getAllConstMembers("Base");
+    }
+    
+    @Test
+    public void getClassInfo_notNullForValidClassName() throws SAXException, IOException
+    {
+        ClassInfo baseClassInfo = xmlProcessor.getClassInfo("Base");
+        assert (baseClassInfo.getM_className().equals("Base"));
+        assert (baseClassInfo.getM_lineNumber() == 4);
+    }
+    
+    @Test
+    public void getClassInfo_returnsNullForInvalidClassName() throws SAXException, IOException
+    {
+        ClassInfo baseClassInfo = xmlProcessor.getClassInfo("BaseNull");
+        assert (baseClassInfo == null);
     }
     
     private String[] getXMLFile() {
