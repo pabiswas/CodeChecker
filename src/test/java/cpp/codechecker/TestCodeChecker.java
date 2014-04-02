@@ -20,7 +20,8 @@ import org.xml.sax.SAXException;
 public class TestCodeChecker
 {
     private CodeChecker codeChecker;
-    private XMLProcessor xmlProcessor;
+//    private GCCXMLProcessor xmlProcessor;
+    private IXMLProcessor xmlProcessor;
     /**
      * Create the test case
      *
@@ -28,7 +29,8 @@ public class TestCodeChecker
      */
     public TestCodeChecker() {
         codeChecker = new CodeChecker();
-        xmlProcessor = new XMLProcessor();
+//        xmlProcessor = new GCCXMLProcessor();
+        xmlProcessor = new GCCXMLProcessor();
     }
 
     @BeforeClass
@@ -106,6 +108,14 @@ public class TestCodeChecker
     {
         ClassInfo baseClassInfo = xmlProcessor.getClassInfo("BaseNull");
         assert (baseClassInfo == null);
+    }
+    
+    @Test
+    public void loadSpringFramework() throws FileNotFoundException, SAXException, IOException
+    {
+         String[] args = new String[10];
+        args[0] = "output.xml";
+        codeChecker.main(args);       
     }
     
     private String[] getXMLFile() {

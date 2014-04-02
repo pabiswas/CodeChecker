@@ -3,6 +3,8 @@ package cpp.codechecker;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.xml.sax.SAXException;
 
 public class CodeChecker {
@@ -10,7 +12,8 @@ public class CodeChecker {
     public static void main(String[] xmlFile) throws FileNotFoundException, SAXException, IOException {
         if(!isParsedXmlPresent(xmlFile))
             return;
-        XMLProcessor processor = new XMLProcessor();
+        ApplicationContext context = new ClassPathXmlApplicationContext("ApplicationContext.xml");
+        IXMLProcessor processor = (IXMLProcessor) context.getBean("IXMLProcessor");
         processor.process(xmlFile);
     }
 

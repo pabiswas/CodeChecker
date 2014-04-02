@@ -16,7 +16,7 @@ import org.xml.sax.SAXException;
  *
  * @author pabiswas
  */
-public class XMLProcessor {
+public class GCCXMLProcessor implements IXMLProcessor {
 
     private HashSet<String> m_classNames;
     private DOMParser parser;
@@ -26,7 +26,7 @@ public class XMLProcessor {
     HashMap<String, ClassInfo> m_classInfo;
     HashMap<String, MemberInfo> m_memberInfo;
 
-    public XMLProcessor() {
+    public GCCXMLProcessor() {
         m_classNames = new HashSet<String>();
         m_classInfo = new HashMap<String, ClassInfo>();
         m_memberInfo = new HashMap<String, MemberInfo>();
