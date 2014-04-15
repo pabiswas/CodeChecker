@@ -1,5 +1,7 @@
 package cpp.codechecker;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author pabiswas
@@ -8,6 +10,15 @@ public class ClassInfo {
     private String m_className;
     private String[] m_members;
     private Integer m_lineNumber;
+    private ArrayList<String> m_methodNames;
+
+    public ArrayList<String> getM_methodNames() {
+        return m_methodNames;
+    }
+
+    public void setM_methodNames(ArrayList<String> m_methodNames) {
+        this.m_methodNames = m_methodNames;
+    }
 
     public String getM_className() {
         return m_className;

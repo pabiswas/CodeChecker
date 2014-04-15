@@ -29,7 +29,6 @@ public class TestCodeChecker
      */
     public TestCodeChecker() {
         codeChecker = new CodeChecker();
-//        xmlProcessor = new GCCXMLProcessor();
         xmlProcessor = new GCCXMLProcessor();
     }
 

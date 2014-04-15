@@ -147,4 +147,12 @@ public class GCCXMLProcessor implements IXMLProcessor {
         classInfo.setM_className(className);
         return className;
     }
+
+    public HashSet<String> getAllMethodsInClass(String classNameToFind) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    public MemberInfo getMemberInfo(String methodName) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 }

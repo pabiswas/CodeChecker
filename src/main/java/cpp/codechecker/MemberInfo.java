@@ -9,6 +9,10 @@ public class MemberInfo {
     private Integer lineNumber;
     private String m_name;
 
+    public MemberInfo() {
+        this.isConst = false;
+    }
+   
     public String getM_name() {
         return m_name;
     }

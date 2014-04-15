@@ -17,4 +17,6 @@ public interface IXMLProcessor {
     public HashSet<String> getAllClassNames();
     HashSet<String> getAllMemberInClass(String classNameToFind);
     public ClassInfo getClassInfo(String className);
+    public MemberInfo getMemberInfo(String methodName);
+    HashSet<String> getAllMethodsInClass(String classNameToFind);
 }
