@@ -3,6 +3,8 @@
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 xsi:schemaLocation="http://www.springframework.org/schema/beans
 http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
-	<bean id="IXMLProcessor" class="cpp.codechecker.GCCXMLProcessor" />
-        <!--bean id="XMLProcessor" class="cpp.codechecker.CPP2XMLProcessor" /-->
+	<!--bean id="IXMLProcessor" class="cpp.codechecker.GCCXMLProcessor" />
+        <bean id="IXMLProcessor" class="cpp.codechecker.CPP2XMLProcessor" /-->
+        <bean id="IXMLProcessor" class="cpp.codechecker.SrcMLProcessor" />
+
 </beans>

@@ -19,6 +19,7 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -32,6 +33,7 @@ public class SrcMLProcessor implements IXMLProcessor {
     HashMap<String, ClassInfo> m_classInfo;
     HashMap<String, MemberInfo> m_memberInfo;
     private HashSet<String> m_classNames;
+    Document document;
 
     public SrcMLProcessor() {
         m_classInfo = new HashMap<String, ClassInfo>();
@@ -44,54 +46,62 @@ public class SrcMLProcessor implements IXMLProcessor {
             DocumentBuilderFactory builderFactory =
                     DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = builderFactory.newDocumentBuilder();
-            Document document = builder.parse(new FileInputStream(args[0]));
+            document = builder.parse(new FileInputStream(args[0]));
 
             XPath xPath = XPathFactory.newInstance().newXPath();
 
-            NodeList classNames = (NodeList) xPath.compile("/unit/class/name").evaluate(document, XPathConstants.NODESET);
-            for (int i = 0; i < classNames.getLength(); ++i) {
+            NodeList classNames = fillClassDetails(xPath);
+            for (int i=0; i<classNames.getLength(); ++i) {
                 String className = classNames.item(i).getTextContent();
-                
-                ClassInfo classInfo = new ClassInfo();
-                classInfo.setM_className(className);
-                ArrayList<String> members = new ArrayList<String>();
-                String memberXPath = "/unit/class[name = \'" + className+ "\']/block/*/decl_stmt/decl/name";
-                NodeList memberNames = (NodeList) xPath.compile(memberXPath).evaluate(document,XPathConstants.NODESET);
-
-                for (int j = 0; j < memberNames.getLength(); ++j)
-                {
-                    String varName = memberNames.item(j).getTextContent();
-                    MemberInfo memInfo = new MemberInfo();
-                    
-                    members.add(varName);
-                    
-                    String specifier = (String) xPath.compile("/unit/class[name=\'"+className+"\']/block/*/decl_stmt/decl[name=\'"+varName+"\']/../decl/type/specifier").evaluate(document,XPathConstants.STRING);
-                    if(specifier.equals("const")) {
-                        memInfo.setIsConst(true);
-                    }
-                    m_memberInfo.put(varName, memInfo);
-                }
-                String[] mem = new String[members.size()];
-                members.toArray(mem);
-                classInfo.setM_members(mem);
-                m_classNames.add(className);
-                
-                String methodXPath = "/unit/class[name = \'" + className+ "\']/block/*/function_decl/name";
-                ArrayList<String> methodList = new ArrayList<String>();
-                NodeList methods = (NodeList) xPath.compile(methodXPath).evaluate(document,XPathConstants.NODESET);
-                for(int k = 0; k < methods.getLength(); ++k)
-                {
-                    String methodName = methods.item(k).getTextContent();
-                    methodList.add(methodName);                    
-                }
-                classInfo.setM_methodNames(methodList);
-                m_classInfo.put(className, classInfo);
+                fillMemberDetails(className, xPath, m_classInfo.get(className));
             }
         } catch (XPathExpressionException ex) {
             Logger.getLogger(SrcMLProcessor.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ParserConfigurationException e) {
             Logger.getLogger(SrcMLProcessor.class.getName()).log(Level.SEVERE, null, e);
         }
+    }
+
+    private NodeList fillClassDetails(XPath xPath) throws DOMException, XPathExpressionException {
+        NodeList classNames = (NodeList) xPath.compile("/unit/class/name").evaluate(document, XPathConstants.NODESET);
+        for (int i = 0; i < classNames.getLength(); ++i) {
+            String className = classNames.item(i).getTextContent();
+            ClassInfo classInfo = new ClassInfo();
+            classInfo.setM_className(className);
+            m_classNames.add(className);
+            m_classInfo.put(className, classInfo);
+        }
+        return classNames;
+    }
+
+    private void fillMemberDetails(String className, XPath xPath, ClassInfo classInfo) throws DOMException, XPathExpressionException {
+        ArrayList<String> members = new ArrayList<String>();
+        String memberXPath = "/unit/class[name = \'" + className+ "\']/block/*/decl_stmt/decl/name";
+        NodeList memberNames = (NodeList) xPath.compile(memberXPath).evaluate(document,XPathConstants.NODESET);
+        
+        for (int j = 0; j < memberNames.getLength(); ++j)
+        {
+            String varName = memberNames.item(j).getTextContent();
+            MemberInfo memInfo = new MemberInfo();
+            members.add(varName);
+            String specifier = (String) xPath.compile("/unit/class[name=\'"+className+"\']/block/*/decl_stmt/decl[name=\'"+varName+"\']/../decl/type/specifier").evaluate(document,XPathConstants.STRING);
+            if(specifier.equals("const")) {
+                memInfo.setIsConst(true);
+            }
+            m_memberInfo.put(varName, memInfo);
+        }
+        String[] mem = new String[members.size()];
+        members.toArray(mem);
+        classInfo.setM_members(mem);
+        String methodXPath = "/unit/class[name = \'" + className+ "\']/block/*/function_decl/name";
+        ArrayList<String> methodList = new ArrayList<String>();
+        NodeList methods = (NodeList) xPath.compile(methodXPath).evaluate(document,XPathConstants.NODESET);
+        for(int k = 0; k < methods.getLength(); ++k)
+        {
+            String methodName = methods.item(k).getTextContent();
+            methodList.add(methodName);
+        }
+        classInfo.setM_methodNames(methodList);
     }
 
     public HashSet<String> getAllClassNames() {
