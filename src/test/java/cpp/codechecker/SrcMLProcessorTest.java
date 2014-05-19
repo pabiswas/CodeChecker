@@ -63,8 +63,13 @@ public class SrcMLProcessorTest {
     @Test
     public void getAllMethodsInClass_should_give_all_methods()
     {
-        HashSet<String> methods = xmlProcessor.getAllMethodsInClass("Test");
-        assert(methods.contains("foo"));
+        HashSet<String> methodsOfClassTest = xmlProcessor.getAllMethodsInClass("Test");
+        assert(methodsOfClassTest.contains("foo"));
+        assert(methodsOfClassTest.contains("func"));
+        HashSet<String> methodsOfClassTest1 = xmlProcessor.getAllMethodsInClass("Test1");
+        assert(methodsOfClassTest1.contains("foo1"));
+        assert(methodsOfClassTest1.contains("returnInt"));
+        assert(methodsOfClassTest1.contains("threeParams"));
     }
     
     @Test
@@ -73,6 +78,17 @@ public class SrcMLProcessorTest {
         assert(!xmlProcessor.getMemberInfo("i").isIsConst());
         assert(!xmlProcessor.getMemberInfo("partha").isIsConst());
         assert(xmlProcessor.getMemberInfo("m_IsTrue").isIsConst());
+    }
+    
+    @Test
+    public void checkConstantMemberFunctions()
+    {
+        assert(!xmlProcessor.getMethodInfo("foo").getIsConst());
+        assert(!xmlProcessor.getMethodInfo("func").getIsConst());
+        assert(!xmlProcessor.getMethodInfo("foo1").getIsConst());
+        assert(xmlProcessor.getMethodInfo("constFunc").getIsConst());
+        assert(!xmlProcessor.getMethodInfo("returnInt").getIsConst());
+        assert(!xmlProcessor.getMethodInfo("threeParams").getIsConst());
     }
     
     private String[] getXMLFile() {
