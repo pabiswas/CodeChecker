@@ -32,12 +32,14 @@ public class SrcMLProcessor implements IXMLProcessor {
 
     HashMap<String, ClassInfo> m_classInfo;
     HashMap<String, MemberInfo> m_memberInfo;
+    HashMap<String, MethodInfo> m_methodInfo;
     private HashSet<String> m_classNames;
     Document document;
 
     public SrcMLProcessor() {
         m_classInfo = new HashMap<String, ClassInfo>();
         m_memberInfo = new HashMap<String, MemberInfo>();
+        m_methodInfo = new HashMap<String, MethodInfo>();
         m_classNames = new HashSet<String>();
     }
 
@@ -54,7 +56,7 @@ public class SrcMLProcessor implements IXMLProcessor {
             for (int i=0; i<classNames.getLength(); ++i) {
                 String className = classNames.item(i).getTextContent();
                 fillMemberDetails(className, xPath, m_classInfo.get(className));
-            }
+            }         
         } catch (XPathExpressionException ex) {
             Logger.getLogger(SrcMLProcessor.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ParserConfigurationException e) {
@@ -84,7 +86,7 @@ public class SrcMLProcessor implements IXMLProcessor {
             String varName = memberNames.item(j).getTextContent();
             MemberInfo memInfo = new MemberInfo();
             members.add(varName);
-            String specifier = (String) xPath.compile("/unit/class[name=\'"+className+"\']/block/*/decl_stmt/decl[name=\'"+varName+"\']/../decl/type/specifier").evaluate(document,XPathConstants.STRING);
+            String specifier = (String) xPath.compile("/unit/class[name=\'"+className+"\']/block/*/decl_stmt/decl[name=\'"+varName+"\']/type/specifier").evaluate(document,XPathConstants.STRING);
             if(specifier.equals("const")) {
                 memInfo.setIsConst(true);
             }
@@ -93,17 +95,46 @@ public class SrcMLProcessor implements IXMLProcessor {
         String[] mem = new String[members.size()];
         members.toArray(mem);
         classInfo.setM_members(mem);
-        String methodXPath = "/unit/class[name = \'" + className+ "\']/block/*/function_decl/name";
+        
         ArrayList<String> methodList = new ArrayList<String>();
+        
+        String methodXPath = "/unit/class[name = \'" + className+ "\']/block/*/function_decl/name";
         NodeList methods = (NodeList) xPath.compile(methodXPath).evaluate(document,XPathConstants.NODESET);
+        
         for(int k = 0; k < methods.getLength(); ++k)
         {
             String methodName = methods.item(k).getTextContent();
+            MethodInfo methodInfo = new MethodInfo();
             methodList.add(methodName);
+            String specifier = (String) xPath.compile("/unit/class[name=\'"+className+"\']/block/*/function_decl[name=\'"+methodName+"\']/specifier").evaluate(document,XPathConstants.STRING);
+            methodInfo.setIsConst(false);
+            if(specifier.equals("const"))
+            {
+               methodInfo.setIsConst(true);
+            } 
+            m_methodInfo.put(methodName, methodInfo);
         }
+        
+        String methodDefXPath = "/unit/class[name = \'" + className+ "\']/block/*/function/name";
+        NodeList methodsDef = (NodeList) xPath.compile(methodDefXPath).evaluate(document,XPathConstants.NODESET);
+        
+        for(int k = 0; k < methodsDef.getLength(); ++k)
+        {
+          String methodName = methodsDef.item(k).getTextContent();
+          methodList.add(methodName);
+          MethodInfo methodInfo = new MethodInfo();
+          String specifier = (String) xPath.compile("/unit/class[name=\'"+className+"\']/block/*/function[name=\'"+methodName+"\']/specifier").evaluate(document,XPathConstants.STRING);
+          methodInfo.setIsConst(false);
+          if(specifier.equals("const"))
+          {
+             methodInfo.setIsConst(true);
+          }
+          m_methodInfo.put(methodName, methodInfo);
+        }
+        
         classInfo.setM_methodNames(methodList);
     }
-
+ 
     public HashSet<String> getAllClassNames() {
         return m_classNames;
     }
@@ -121,6 +152,11 @@ public class SrcMLProcessor implements IXMLProcessor {
 
     public MemberInfo getMemberInfo(String memberName) {
         return m_memberInfo.get(memberName);
+    }
+    
+    public MethodInfo getMethodInfo(String methodName)
+    {
+        return m_methodInfo.get(methodName);
     }
     
     public HashSet<String> getAllMethodsInClass(String classNameToFind) {

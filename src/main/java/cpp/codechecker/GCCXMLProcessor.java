@@ -25,11 +25,13 @@ public class GCCXMLProcessor implements IXMLProcessor {
     MemberInfo m_memInfo;
     HashMap<String, ClassInfo> m_classInfo;
     HashMap<String, MemberInfo> m_memberInfo;
+    HashMap<String, MethodInfo> m_methodInfo;
 
     public GCCXMLProcessor() {
         m_classNames = new HashSet<String>();
         m_classInfo = new HashMap<String, ClassInfo>();
         m_memberInfo = new HashMap<String, MemberInfo>();
+        m_methodInfo = new HashMap<String, MethodInfo>();
     }
 
     public void process(String[] args) throws SAXException, IOException {
@@ -115,6 +117,10 @@ public class GCCXMLProcessor implements IXMLProcessor {
         return memInfo;
     }
 
+    public MethodInfo getMethodInfo(String methodName)
+    {
+       return m_methodInfo.get(methodName);
+    }
     private void fillMemberInfo(Node tempNode) {
         if (tempNode.getNodeName().equals("Field")) {
             MemberInfo memInfo = new MemberInfo();
