@@ -135,10 +135,12 @@ public class SrcMLProcessor implements IXMLProcessor {
         classInfo.setM_methodNames(methodList);
     }
  
+    @Override
     public HashSet<String> getAllClassNames() {
         return m_classNames;
     }
 
+    @Override
     public HashSet<String> getAllMemberInClass(String classNameToFind) {
         String[] members = m_classInfo.get(classNameToFind).getM_members();
         HashSet<String> updatedMembers = new HashSet<String>();
@@ -146,19 +148,23 @@ public class SrcMLProcessor implements IXMLProcessor {
         return updatedMembers;
     }
 
+    @Override
     public ClassInfo getClassInfo(String className) {
         return m_classInfo.get(className);
     }
 
+    @Override
     public MemberInfo getMemberInfo(String memberName) {
         return m_memberInfo.get(memberName);
     }
     
+    @Override
     public MethodInfo getMethodInfo(String methodName)
     {
         return m_methodInfo.get(methodName);
     }
     
+    @Override
     public HashSet<String> getAllMethodsInClass(String classNameToFind) {
         ArrayList<String> methodNames = m_classInfo.get(classNameToFind).getM_methodNames();
         HashSet<String> hset = new HashSet<String>();

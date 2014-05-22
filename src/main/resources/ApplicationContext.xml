@@ -6,5 +6,5 @@ http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 	<!--bean id="IXMLProcessor" class="cpp.codechecker.GCCXMLProcessor" />
         <bean id="IXMLProcessor" class="cpp.codechecker.CPP2XMLProcessor" /-->
         <bean id="IXMLProcessor" class="cpp.codechecker.SrcMLProcessor" />
-
+        <bean id="IPrinter" class="cpp.codechecker.ConsolePrinter" />
 </beans>
